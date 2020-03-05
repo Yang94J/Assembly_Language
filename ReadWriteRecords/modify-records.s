@@ -29,6 +29,22 @@ _start:
 	movl $0666, %edx
 	int $Linux_Syscall
 
+	cmpl $0, %eax
+	jl continue_processing
+
+	.section .data
+	no_open_file_code:
+		.ascii "0001: \0"
+	no_open_file_Msg:
+		.ascii "Can't open input file \0"
+	
+	.section .text
+	pushl $no_open_file_code
+	pushl $no_open_file_Msg
+	call error_exit
+
+continue_processing:
+
 	movl %eax, Stack_Input_des(%ebp)
 
 	movl $Sys_Open, %eax
